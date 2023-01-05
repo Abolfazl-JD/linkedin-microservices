@@ -33,7 +33,7 @@ export class User {
     password: string
 
     @Exclude()
-    @Column()
+    @Column({ nullable: true, default: null })
     hashedRefreshToken: string
 
     @Column({ type: 'enum', enum: Role, default: Role.USER })
