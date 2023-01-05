@@ -6,6 +6,7 @@ import { Conversation } from "./apps/conversations/src/conversation.entity";
 import { Feed } from "./apps/feeds/src/feed.entity";
 import { Message } from "./apps/messages/src/message.entity";
 import { User } from "./apps/users/src/user.entity";
+import { CreateTables1672927510129 } from "./migrations/1672927510129-CreateTables";
 
 config();
 
@@ -21,4 +22,5 @@ export default new DataSource({
     database: configService.get('POSTGRES_DATABASE'),
     synchronize: false,
     entities: [User, Feed, ConnectionReq, Conversation, Message],
+    migrations: [CreateTables1672927510129]
 })
