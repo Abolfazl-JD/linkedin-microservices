@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Inject, Param, ParseFilePipeBuilder, Patch, Post, Res, Req, UploadedFile, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpStatus, Inject, Param, ParseFilePipeBuilder, Patch, Post, Res, Req, UploadedFile, UseGuards, UseInterceptors, HttpCode, ClassSerializerInterceptor } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { RegisterUserDto } from './dtos/register-user.dto';
@@ -17,6 +17,7 @@ import { Request } from 'express';
 import { User } from './user.entity';
 import { JWTRefreshGuard } from './guards/jwt-refresh.guard';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
   
