@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Inject, Param, ParseFilePipeBuilder, Patch, Post, Res, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpStatus, Inject, Param, ParseFilePipeBuilder, Patch, Post, Res, Req, UploadedFile, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { RegisterUserDto } from './dtos/register-user.dto';
@@ -13,6 +13,9 @@ import { isImageExtSafe, multerConfigOptions } from '../multer.config';
 import { ClientProxy, Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 import { ValidateUserDto } from './dtos/validate-user.dto';
 import { UpdateClientIdDto } from './dtos/update-client-id.dto';
+import { Request } from 'express';
+import { User } from './user.entity';
+import { JWTRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller('users')
 export class UsersController {
@@ -24,16 +27,42 @@ export class UsersController {
     ) { }
 
     @Post('register')
-    async signupUser(@Body() userInfo: RegisterUserDto) {
-        const userData = await this.authService.signupUser(userInfo)
-        this.emailClient.emit('user-created', userData.newUser)
-        return userData
+    async signupUser(@Body() userInfo: RegisterUserDto, @Req() req: Request) {
+        const user = await this.authService.signupUser(userInfo)
+        console.log('\n signed up user is : ', user)
+        const { accessTokenCookie, refreshTokenCookie } = await this.authService.generateJWTCookies(user as User)
+
+        req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie])
+        return user
     }
 
     @Post('login')
-    async loginUser(@Body() userInfo: LoginUserDto) {
-        const loggedInUserData = await this.authService.loginUser(userInfo)
-        return loggedInUserData
+    async loginUser(@Body() userInfo: LoginUserDto, @Req() req: Request) {
+        const user = await this.authService.loginUser(userInfo)
+        console.log('\n logged in user is:', user)
+        const { accessTokenCookie, refreshTokenCookie } = await this.authService.generateJWTCookies(user)
+
+        req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie])
+        return user
+    }
+
+    @UseGuards(JWTRefreshGuard)
+    @Get('refresh')
+    refresh(@Req() req: AuthorizedReq) {
+        console.log('\n testing current user decorator : ', req.user)
+        const accessTokenCookie = this.authService.getJWTAccessTokenCookie(req.user.id)
+        console.log('\n new access token cookie is: ', accessTokenCookie)
+        req.res.setHeader('Set-Cookie', accessTokenCookie)
+        return req.user
+    }
+
+    @UseGuards(AuthorizationGuard)
+    @Post('logout')
+    @HttpCode(200)
+    async logOut(@Req() req: AuthorizedReq) {
+        await this.usersService.removeRefreshTokenFromDatabase(req.user.id)
+        req.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut())
+        return 'you have been successfully logged out'
     }
 
     @Get(':id')
@@ -81,7 +110,7 @@ export class UsersController {
         console.log('\n validate-user message was recieved')
         console.log('\n the token is:', data.token)
         console.log('\n ready to verify token...')
-        return this.authService.verifyToken(data.token)
+        return this.authService.verifyAccessToken(data.token)
     }
 
     @MessagePattern('confirm-email')

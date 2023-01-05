@@ -9,23 +9,20 @@ export class AuthorizationGuard implements CanActivate {
   constructor(@Inject(USERS_SERVICE) private readonly usersClient: ClientProxy){}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean>{
-    console.log('\n checking authorization started...')
-    const { authorization } = context.switchToHttp().getRequest().headers
-    console.log('\n authorization is :', authorization)
-    if (!authorization || !authorization.startsWith('Bearer ')) return false
-
-    const token = authorization.split(' ')[1]
-    console.log('\n token is exported from authorization', token)
-    console.log('\n ready to send the validate-user message to auth service')
-    return this.usersClient.send('validate-user', {
-            token
+      const req = context.switchToHttp().getRequest()
+      if(!req.cookies?.Authentication) return false
+        console.log('\n request cookies are: ', req.cookies)
+        const { Authentication: accessToken } = req.cookies
+        console.log('\n token is exported from authentication', accessToken)
+        return this.usersClient.send('validate-user', {
+            token: accessToken
         }).pipe(
             tap((res) => {
                 console.log('\n auth client response is: ', res)
                 console.log('\n adding user to the request')
                 // exclude password from user
                 const { password, ...user } = res
-                context.switchToHttp().getRequest().user = user
+                req.user = user
                 console.log('user was added')
             }),
             catchError(() => {

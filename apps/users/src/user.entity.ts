@@ -32,6 +32,10 @@ export class User {
     @Column()
     password: string
 
+    @Exclude()
+    @Column()
+    hashedRefreshToken: string
+
     @Column({ type: 'enum', enum: Role, default: Role.USER })
     role: string
 
