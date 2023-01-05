@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { ConnectionReq, StatusEnum } from './connection-req.entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { User } from 'apps/users/src/user.entity';
+import { User } from '../../users/src/user.entity';
 
 @Injectable()
 export class ConnectionReqsService {

@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from 'apps/users/src/user.entity';
+import { User } from '../../users/src/user.entity';
 
 export enum StatusEnum {
     PENDING = 'pending',

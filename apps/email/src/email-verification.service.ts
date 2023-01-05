@@ -2,7 +2,7 @@ import { USERS_SERVICE } from "@app/common";
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ClientProxy } from "@nestjs/microservices";
-import { User } from "apps/users/src/user.entity";
+import { User } from "../../users/src/user.entity";
 import { sign, verify } from "jsonwebtoken";
 import { catchError, tap, lastValueFrom, firstValueFrom } from "rxjs";
 import { EmailService } from "./email.service";

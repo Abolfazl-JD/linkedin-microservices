@@ -1,4 +1,4 @@
-import { User } from "apps/users/src/user.entity";
+import { User } from "../../users/src/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('feeds')

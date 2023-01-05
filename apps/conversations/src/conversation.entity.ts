@@ -1,5 +1,5 @@
-import { Message } from "apps/messages/src/message.entity";
-import { User } from "apps/users/src/user.entity";
+import { Message } from "../../messages/src/message.entity";
+import { User } from "../../users/src/user.entity";
 import { JoinTable, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn, OneToMany } from "typeorm";
 
 @Entity('conversations')

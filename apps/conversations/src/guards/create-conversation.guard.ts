@@ -2,7 +2,7 @@ import { AuthorizedReq, CONNECTION_REQUESTS_SERVICE } from '@app/common';
 import { Injectable, CanActivate, ExecutionContext, Inject } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
-import { User } from 'apps/users/src/user.entity';
+import { User } from '../../../users/src/user.entity';
 
 @Injectable()
 export class CreateConversationGuard implements CanActivate {

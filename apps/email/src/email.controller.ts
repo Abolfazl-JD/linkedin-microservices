@@ -3,7 +3,7 @@ import { AuthorizationGuard, AuthorizedReq, RmqService, USERS_SERVICE } from '@a
 import { EmailConfirmationDto } from './dto/email-confirmation.dto';
 import { EmailVerificationService } from './email-verification.service';
 import { Ctx, EventPattern, Payload, RmqContext, ClientProxy } from '@nestjs/microservices';
-import { User } from 'apps/users/src/user.entity';
+import { User } from '../../users/src/user.entity';
 import { catchError, tap } from 'rxjs';
 
 @Controller('email')

@@ -1,6 +1,6 @@
 import { AuthorizedReq } from '@app/common';
 import { Injectable, CanActivate, ExecutionContext, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { Role } from 'apps/users/src/user.entity';
+import { Role } from '../../../users/src/user.entity';
 import { Observable } from 'rxjs';
 import { StatusEnum } from '../connection-req.entity';
 import { ConnectionReqsService } from './../connection-reqs.service';

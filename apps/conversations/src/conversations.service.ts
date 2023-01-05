@@ -2,7 +2,7 @@ import { USERS_SERVICE } from '@app/common';
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'apps/users/src/user.entity';
+import { User } from '../../users/src/user.entity';
 import { lastValueFrom } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Conversation } from './conversation.entity';

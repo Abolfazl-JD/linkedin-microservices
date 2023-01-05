@@ -1,9 +1,9 @@
-import { Feed } from "apps/feeds/src/feed.entity";
+import { Feed } from "../../feeds/src/feed.entity";
 import { Exclude } from "class-transformer";
 import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { ConnectionReq } from "apps/connection-reqs/src/connection-req.entity"
-import { Conversation } from "apps/conversations/src/conversation.entity";
-import { Message } from "apps/messages/src/message.entity";
+import { ConnectionReq } from "../../connection-reqs/src/connection-req.entity"
+import { Conversation } from "../../conversations/src/conversation.entity";
+import { Message } from "../../messages/src/message.entity";
 
 export enum Role {
     ADMIN = "admin",

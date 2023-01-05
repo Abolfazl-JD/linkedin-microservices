@@ -1,7 +1,6 @@
 import { AuthorizedReq } from '@app/common';
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Role } from 'apps/users/src/user.entity';
-import { Observable } from 'rxjs';
+import { Role } from '../../../users/src/user.entity';
 import { FeedsService } from '../feeds.service';
 
 @Injectable()
