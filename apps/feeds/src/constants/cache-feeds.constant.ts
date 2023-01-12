@@ -1,0 +1,1 @@
+export const GET_FEEDS_CACHE_KEY = 'get-feeds'

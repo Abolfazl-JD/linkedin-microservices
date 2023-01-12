@@ -10,6 +10,7 @@ export class AuthorizationGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean>{
       const req = context.switchToHttp().getRequest()
+      console.log('req cookies : ', req.cookies)
       if(!req.cookies?.Authentication) return false
         console.log('\n request cookies are: ', req.cookies)
         const { Authentication: accessToken } = req.cookies

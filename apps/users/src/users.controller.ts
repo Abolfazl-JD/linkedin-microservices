@@ -16,6 +16,7 @@ import { UpdateClientIdDto } from './dtos/update-client-id.dto';
 import { Request } from 'express';
 import { User } from './user.entity';
 import { JWTRefreshGuard } from './guards/jwt-refresh.guard';
+import { lastValueFrom } from 'rxjs';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
@@ -32,6 +33,7 @@ export class UsersController {
         const user = await this.authService.signupUser(userInfo)
         console.log('\n signed up user is : ', user)
         const { accessTokenCookie, refreshTokenCookie } = await this.authService.generateJWTCookies(user as User)
+        await lastValueFrom(this.emailClient.emit('user-created', user))
 
         req.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie])
         return user

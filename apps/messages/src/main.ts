@@ -2,7 +2,6 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { MessagesModule } from './messages.module';
 import { ValidationPipe } from '@nestjs/common';
-import { RmqService } from '@app/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(MessagesModule);

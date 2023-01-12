@@ -1,6 +1,5 @@
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { compare, genSalt, hash } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { LoginUserDto } from "./dtos/login-user.dto";
 import { RegisterUserDto } from "./dtos/register-user.dto";
@@ -57,8 +56,8 @@ export class AuthService {
     generateJWT(body: Partial<User>) {
         return sign(
             body,
-            this.configService.get<string>('JWT_SECRET'),
-            { expiresIn: this.configService.get<string>('JWT_LIFETIME') }
+            this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+            { expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION_TIME') }
         )
     }
 

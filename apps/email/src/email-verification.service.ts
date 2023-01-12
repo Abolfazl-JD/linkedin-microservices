@@ -17,6 +17,7 @@ export class EmailVerificationService {
     ) { }
 
     async sendVerificationLink(email: string) {
+        console.log('sending verification link')
         const token = await lastValueFrom(this.usersClient.send('generate-JWT', { email }).pipe(
             tap((res) => res),
             catchError((err) => { throw new err })
@@ -35,8 +36,12 @@ export class EmailVerificationService {
     }
 
     async decodeConfirmationToken(confirmationToken: string) {
+        console.log('verifying the token')
         try {
-            const decoded: any = verify(confirmationToken, process.env.JWT_SECRET)
+            const decoded: any = verify(
+                confirmationToken,
+                this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET')
+            )
             console.log('decoded', decoded)
             if (typeof decoded === 'object' && 'email' in decoded) return decoded.email
             throw new BadRequestException()

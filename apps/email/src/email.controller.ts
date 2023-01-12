@@ -21,6 +21,7 @@ export class EmailController {
 
     @EventPattern('user-created')
     sendVerificationLink(@Payload() data: User, @Ctx() context: RmqContext) {
+        console.log('\n user-created event was called', data)
         this.emailVerificationService.sendVerificationLink(data.email)
         this.rmqService.ack(context)
     }

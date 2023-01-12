@@ -1,25 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../users/src/user.entity';
 import { Repository } from 'typeorm';
 import { CreateFeedDto } from './dtos/create-feed.dto';
 import { GetFeedsDto } from './dtos/get-feeds.dto';
 import { Feed } from './feed.entity';
+import { Cache } from 'cache-manager'
+import { GET_FEEDS_CACHE_KEY } from './constants/cache-feeds.constant';
 
 @Injectable()
 export class FeedsService {
 
-  constructor(@InjectRepository(Feed) private feedsRepository: Repository<Feed>){}
+  constructor(
+    @InjectRepository(Feed) private feedsRepository: Repository<Feed>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) { }
   
-  createFeed(user: User, feedInfo: CreateFeedDto) {
+  async createFeed(user: User, feedInfo: CreateFeedDto) {
     const newFeed = this.feedsRepository.create(feedInfo)
     newFeed.author = user
-    return this.feedsRepository.save(newFeed)
+    const savedNewFeed = await this.feedsRepository.save(newFeed)
+    await this.clearCache()
+    return savedNewFeed
   }
 
-  findFeeds(getFeedsDto: GetFeedsDto) {
+  async findFeeds(getFeedsDto: GetFeedsDto) {
     const { skip = 0, take = 10 } = getFeedsDto
-    console.log(skip, take)
+    console.log('get-feeds-cache-key', await this.cacheManager.get(GET_FEEDS_CACHE_KEY))
     return this.feedsRepository.find({
       relations: { author: true },
       skip,
@@ -38,12 +45,23 @@ export class FeedsService {
 
   async updateFeed(id: number, body: string) {
     const feed = await this.findOneFeed(id)
-    return this.feedsRepository.save({ ...feed, body })
+    const updatedFeed = await this.feedsRepository.save({ ...feed, body })
+    await this.clearCache()
+    return updatedFeed
   }
 
   async deleteFeed(id: number){
     const feed = await this.findOneFeed(id)
-    this.feedsRepository.remove(feed)
+    await this.feedsRepository.remove(feed)
+    await this.clearCache()
     return 'feed was successfully deleted'
+  }
+
+  async clearCache() {
+    const keys: string[] = await this.cacheManager.store.keys()
+    console.log('cache keys are : ', keys)
+    for (const key of keys) {
+      if(key.startsWith(GET_FEEDS_CACHE_KEY)) this.cacheManager.del(key)
+    }
   }
 }
