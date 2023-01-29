@@ -19,7 +19,7 @@ import { User } from "apps/users/src/user.entity";
               password: configService.get<string>('POSTGRES_PASSWORD'),
               database: configService.get<string>('POSTGRES_DATABASE'),
               entities: [User, Feed, ConnectionReq, Conversation, Message],
-              synchronize: true
+              synchronize: false
             }),
             inject: [ConfigService]
           }),
