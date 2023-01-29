@@ -121,7 +121,7 @@ export class UsersController {
         console.log('\n confirm-email message recieved')
         const user = await this.usersService.findUserByEmail(data.email)
         console.log('\n user was found :', user)
-        if (user.emailIsConfirmed) throw new BadRequestException('Email already confirmed')
+        if (user.emailIsConfirmed) throw new BadRequestException('Email has already been confirmed')
         return this.usersService.updateEmailConfirmation(data.email)
     }
 

@@ -24,6 +24,11 @@ export class FeedsController {
     return this.feedsService.findFeeds(getFeedsDto)
   }
 
+  @Get(':id')
+  findOneFeed(@Param('id') id: number) {
+    return this.feedsService.findOneFeed(id)
+  }
+
   @UseGuards(AuthorizationGuard, EmailConfirmationGuard, UpdateFeedGuard)
   @Patch(':id')
   updateFeed(@Body() feedDetails: CreateFeedDto, @Param('id') id: number) {
