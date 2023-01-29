@@ -94,7 +94,7 @@ export class UsersController {
         // check if the file extension is safe
         const isImgExtSafe = await isImageExtSafe(fullFilePath)
           
-        if (isImgExtSafe) return this.usersService.updateUserImage((request.user.id) as number, file.filename)
+        if (isImgExtSafe) return this.usersService.updateUserImage(request.user.id, file.filename)
         unlinkSync(fullFilePath)
         throw new BadRequestException('the file content does not match its extension')
     }
